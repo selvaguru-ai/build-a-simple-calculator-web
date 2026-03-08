@@ -1,9 +1,35 @@
-/* ============================================================
-   Calculator — style.css
-   Mobile-first, responsive, accessible
-   ============================================================ */
+/* ============================================
+   Calculator App - Complete Stylesheet
+   Uses CSS Custom Properties, Grid, and Flexbox
+   ============================================ */
 
-/* ---------- Reset & Base ---------- */
+/* --- CSS Custom Properties (Design Tokens) --- */
+:root {
+  --bg-color: #1a1a2e;
+  --calculator-bg: #16213e;
+  --display-bg: #0f3460;
+  --btn-number: #1a1a2e;
+  --btn-operator: #e94560;
+  --btn-action: #533483;
+  --btn-equals: #e94560;
+  --text-color: #eaeaea;
+  --shadow: rgba(0, 0, 0, 0.4);
+
+  /* Derived hover/active variants (lightened/darkened manually) */
+  --btn-number-hover: #252545;
+  --btn-number-active: #111122;
+  --btn-operator-hover: #f05a73;
+  --btn-operator-active: #c73550;
+  --btn-action-hover: #6a44a8;
+  --btn-action-active: #3d2660;
+  --btn-equals-hover: #f05a73;
+  --btn-equals-active: #c73550;
+
+  /* Typography */
+  --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* --- CSS Reset & Base Styles --- */
 *,
 *::before,
 *::after {
@@ -12,228 +38,333 @@
   padding: 0;
 }
 
-:root {
-  --color-bg: #1c1c1e;
-  --color-calculator-bg: #1c1c1e;
-  --color-display-bg: #1c1c1e;
-  --color-btn-digit: #333335;
-  --color-btn-action: #a5a5a5;
-  --color-btn-operator: #ff9f0a;
-  --color-btn-equals: #ff9f0a;
-  --color-text-primary: #ffffff;
-  --color-text-action: #1c1c1e;
-  --color-text-expression: #888;
-  --color-focus-ring: #0a84ff;
-
-  --btn-size: clamp(56px, 18vw, 80px);
-  --btn-radius: 50%;
-  --btn-font-size: clamp(1rem, 4vw, 1.5rem);
-  --display-font-size: clamp(2rem, 10vw, 3.5rem);
-  --gap: clamp(8px, 2vw, 12px);
-  --calculator-width: clamp(280px, 90vw, 400px);
-  --calculator-padding: clamp(12px, 3vw, 20px);
-  --border-radius-calc: 20px;
-}
-
-html,
+/* --- Body: Full-Viewport Centered Layout --- */
 body {
-  height: 100%;
-  background-color: var(--color-bg);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
-    Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-}
-
-/* ---------- Visually Hidden (Screen Reader Only) ---------- */
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}
-
-/* ---------- App Shell ---------- */
-#app {
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   min-height: 100vh;
-  padding: 16px;
+  background: var(--bg-color);
+  font-family: var(--font-family);
+  color: var(--text-color);
+  /* Subtle radial gradient for depth */
+  background-image: radial-gradient(
+    ellipse at center,
+    #1e1e3a 0%,
+    var(--bg-color) 70%
+  );
 }
 
-/* ---------- Calculator Container ---------- */
-.calculator {
-  width: var(--calculator-width);
-  background-color: var(--color-calculator-bg);
-  border-radius: var(--border-radius-calc);
-  padding: var(--calculator-padding);
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6);
-  user-select: none;
+/* --- Calculator Container --- */
+.calculator-container {
+  width: 320px;
+  border-radius: 16px;
+  box-shadow:
+    0 20px 60px var(--shadow),
+    0 6px 20px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  overflow: hidden;
+  background: var(--calculator-bg);
+  /* Subtle border for definition */
+  border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-/* ---------- Display ---------- */
+/* --- Display Section --- */
 .display {
-  padding: 12px 8px 20px;
-  text-align: right;
-  min-height: 110px;
+  padding: 16px 20px 12px;
+  min-height: 80px;
+  background: var(--display-bg);
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
-  overflow: hidden;
+  align-items: flex-end;
+  justify-content: space-around;
+  word-break: break-all;
+  /* Subtle inner shadow at the bottom for separation */
+  box-shadow: inset 0 -2px 8px rgba(0, 0, 0, 0.25);
+  gap: 4px;
 }
 
-.display__expression {
-  font-size: clamp(0.85rem, 3vw, 1rem);
-  color: var(--color-text-expression);
-  min-height: 1.4em;
+/* Previous operand: smaller, muted text above current operand */
+.previous-operand {
+  font-size: 0.9rem;
+  opacity: 0.7;
+  min-height: 1.2em;
+  color: var(--text-color);
+  letter-spacing: 0.03em;
+  /* Truncate very long previous expressions */
+  max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  margin-bottom: 4px;
+  text-align: right;
 }
 
-.display__current {
-  font-size: var(--display-font-size);
-  font-weight: 300;
-  color: var(--color-text-primary);
-  line-height: 1.1;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+/* Current operand: large, bold, prominent */
+.current-operand {
+  font-size: 2rem;
+  font-weight: bold;
+  color: var(--text-color);
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+  /* Allow wrapping for very long numbers */
+  word-break: break-all;
+  text-align: right;
+  width: 100%;
+  /* Smooth font-size transition when number gets long */
   transition: font-size 0.1s ease;
 }
 
-/* Shrink font when number is long */
-.display__current.display__current--long {
-  font-size: clamp(1.4rem, 6vw, 2.2rem);
+/* Shrink font when number is very long to prevent overflow */
+.current-operand.long-number {
+  font-size: 1.4rem;
 }
 
-/* ---------- Button Grid ---------- */
+.current-operand.very-long-number {
+  font-size: 1.1rem;
+}
+
+/* --- Button Grid --- */
 .button-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: var(--gap);
+  gap: 1px;
+  background: var(--calculator-bg);
 }
 
-/* ---------- Buttons — Base ---------- */
-.btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: var(--btn-size);
+/* --- Base Button Styles --- */
+.button-grid button {
+  padding: 20px;
+  font-size: 1.1rem;
+  font-family: var(--font-family);
+  font-weight: 500;
   border: none;
-  border-radius: var(--btn-radius);
-  font-size: var(--btn-font-size);
-  font-weight: 400;
   cursor: pointer;
-  transition: filter 0.08s ease, transform 0.08s ease;
-  outline: none; /* We provide custom focus styles below */
+  color: var(--text-color);
+  transition:
+    background 0.15s ease,
+    transform 0.08s ease,
+    box-shadow 0.1s ease;
+  outline: none;
+  /* Ensure text doesn't overflow button */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  /* Prevent text selection on rapid clicks */
+  user-select: none;
+  -webkit-user-select: none;
+  /* Tap highlight removal for mobile */
   -webkit-tap-highlight-color: transparent;
   position: relative;
 }
 
-/* ---------- Button Variants ---------- */
-.btn--digit {
-  background-color: var(--color-btn-digit);
-  color: var(--color-text-primary);
+/* --- Number Buttons --- */
+.button-grid button.btn-number {
+  background: var(--btn-number);
 }
 
-.btn--action {
-  background-color: var(--color-btn-action);
-  color: var(--color-text-action);
-  font-weight: 500;
+.button-grid button.btn-number:hover {
+  background: var(--btn-number-hover);
 }
 
-.btn--operator {
-  background-color: var(--color-btn-operator);
-  color: var(--color-text-primary);
-  font-weight: 500;
+.button-grid button.btn-number:active,
+.button-grid button.btn-number.key-active {
+  background: var(--btn-number-active);
+  transform: scale(0.95);
 }
 
-.btn--equals {
-  background-color: var(--color-btn-equals);
-  color: var(--color-text-primary);
-  font-weight: 500;
+/* --- Operator Buttons (+, -, *, ÷) --- */
+.button-grid button.btn-operator {
+  background: var(--btn-operator);
+  font-weight: 600;
+  font-size: 1.2rem;
 }
 
-/* Zero button spans 2 columns */
-.btn--zero {
+.button-grid button.btn-operator:hover {
+  background: var(--btn-operator-hover);
+}
+
+.button-grid button.btn-operator:active,
+.button-grid button.btn-operator.key-active {
+  background: var(--btn-operator-active);
+  transform: scale(0.95);
+}
+
+/* --- Action Buttons (AC, +/-, ., DEL) --- */
+.button-grid button.btn-action {
+  background: var(--btn-action);
+  font-size: 1rem;
+}
+
+.button-grid button.btn-action:hover {
+  background: var(--btn-action-hover);
+}
+
+.button-grid button.btn-action:active,
+.button-grid button.btn-action.key-active {
+  background: var(--btn-action-active);
+  transform: scale(0.95);
+}
+
+/* --- Equals Button --- */
+.button-grid button.btn-equals {
+  background: var(--btn-equals);
+  font-weight: 700;
+  font-size: 1.3rem;
+  /* Slight glow to draw attention */
+  box-shadow: 0 0 12px rgba(233, 69, 96, 0.3);
+}
+
+.button-grid button.btn-equals:hover {
+  background: var(--btn-equals-hover);
+  box-shadow: 0 0 18px rgba(233, 69, 96, 0.45);
+}
+
+.button-grid button.btn-equals:active,
+.button-grid button.btn-equals.key-active {
+  background: var(--btn-equals-active);
+  transform: scale(0.95);
+  box-shadow: 0 0 6px rgba(233, 69, 96, 0.2);
+}
+
+/* --- Focus Styles (Keyboard Accessibility) --- */
+/* Visible focus ring for keyboard navigation */
+.button-grid button:focus-visible {
+  outline: 2px solid var(--text-color);
+  outline-offset: -3px;
+  z-index: 1;
+}
+
+/* --- Span-2 Utility: Button spanning 2 columns --- */
+/* Used for the zero button or any wide button */
+.button-grid button.span-2 {
   grid-column: span 2;
-  border-radius: calc(var(--btn-size) / 2);
-  justify-content: flex-start;
-  padding-left: clamp(20px, 6vw, 28px);
 }
 
-/* ---------- Button States ---------- */
-
-/* Hover */
-.btn--digit:hover {
-  filter: brightness(1.3);
+/* --- Ripple Effect (subtle click feedback) --- */
+.button-grid button::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.08);
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  pointer-events: none;
 }
 
-.btn--action:hover {
-  filter: brightness(0.85);
+.button-grid button:active::after,
+.button-grid button.key-active::after {
+  opacity: 1;
 }
 
-.btn--operator:hover,
-.btn--equals:hover {
-  filter: brightness(1.2);
+/* --- Error State on Display --- */
+.display.error .current-operand {
+  color: #ff6b6b;
+  font-size: 1.6rem;
 }
 
-/* Active (mouse/touch press) */
-.btn:active,
-.btn.active {
-  transform: scale(0.93);
-  filter: brightness(0.75);
-}
+/* --- Responsive Design: Mobile Breakpoint --- */
+@media (max-width: 480px) {
+  body {
+    /* Align to top on very small screens to avoid overflow */
+    align-items: flex-start;
+    padding-top: 0;
+  }
 
-.btn--operator:active,
-.btn--operator.active,
-.btn--equals:active,
-.btn--equals.active {
-  filter: brightness(0.8);
-}
+  .calculator-container {
+    width: 100vw;
+    /* Remove rounded corners on mobile for edge-to-edge feel */
+    border-radius: 0;
+    border: none;
+    box-shadow: none;
+    /* Fill full viewport height on small screens */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
 
-/* Operator button highlighted when it is the pending operator */
-.btn--operator.btn--operator-active {
-  background-color: var(--color-text-primary);
-  color: var(--color-btn-operator);
-}
+  .display {
+    padding: 20px 16px 14px;
+    min-height: 100px;
+    flex-shrink: 0;
+  }
 
-/* ---------- Focus Styles (keyboard navigation) ---------- */
-.btn:focus-visible {
-  outline: 3px solid var(--color-focus-ring);
-  outline-offset: 3px;
-  box-shadow: 0 0 0 5px rgba(10, 132, 255, 0.35);
-}
+  .current-operand {
+    font-size: 2.2rem;
+  }
 
-/* Fallback for browsers that don't support :focus-visible */
-.btn:focus {
-  outline: 3px solid var(--color-focus-ring);
-  outline-offset: 3px;
-}
+  .button-grid {
+    /* Expand grid to fill remaining height */
+    flex: 1;
+    /* Ensure buttons fill available space */
+    grid-template-rows: repeat(5, 1fr);
+  }
 
-/* Remove focus ring for mouse users in browsers supporting :focus-visible */
-.btn:focus:not(:focus-visible) {
-  outline: none;
-  box-shadow: none;
-}
+  .button-grid button {
+    /* Reduced padding on mobile */
+    padding: 16px;
+    font-size: 1.05rem;
+  }
 
-/* ---------- Responsive Tweaks ---------- */
-@media (max-width: 320px) {
-  :root {
-    --btn-size: 56px;
-    --gap: 8px;
+  .button-grid button.btn-operator {
+    font-size: 1.15rem;
+  }
+
+  .button-grid button.btn-equals {
+    font-size: 1.2rem;
   }
 }
 
-@media (min-width: 480px) {
-  .calculator {
-    box-shadow: 0 32px 80px rgba(0, 0, 0, 0.7);
+/* --- Extra Small Screens (e.g., 320px wide) --- */
+@media (max-width: 360px) {
+  .button-grid button {
+    padding: 13px 8px;
+    font-size: 0.95rem;
+  }
+
+  .current-operand {
+    font-size: 1.8rem;
+  }
+
+  .previous-operand {
+    font-size: 0.8rem;
+  }
+}
+
+/* --- Landscape Mobile --- */
+@media (max-width: 768px) and (orientation: landscape) {
+  body {
+    align-items: flex-start;
+  }
+
+  .calculator-container {
+    width: 360px;
+    border-radius: 12px;
+    margin: 8px auto;
+  }
+
+  .display {
+    min-height: 60px;
+    padding: 10px 16px;
+  }
+
+  .current-operand {
+    font-size: 1.6rem;
+  }
+
+  .button-grid button {
+    padding: 12px;
+    font-size: 1rem;
+  }
+}
+
+/* --- Reduced Motion Preference --- */
+@media (prefers-reduced-motion: reduce) {
+  .button-grid button {
+    transition: background 0.05s ease;
+  }
+
+  .button-grid button:active,
+  .button-grid button.key-active {
+    transform: none;
   }
 }
