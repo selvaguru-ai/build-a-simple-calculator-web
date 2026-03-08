@@ -1,64 +1,70 @@
-# Calculator
+# Simple Calculator
 
-A simple, accessible calculator web app built with vanilla HTML5, CSS3, and JavaScript (ES6+).
+A lightweight, accessible calculator web app built with **Vanilla HTML5**, **CSS3**, and **JavaScript (ES6+)**. No frameworks, no dependencies — just open the file and calculate.
 
 ## Features
 
-- **Basic arithmetic**: addition, subtraction, multiplication, division
-- **Additional operations**: percentage, toggle sign, decimal input, backspace
-- **Chained calculations**: press an operator after a result to continue computing
-- **Keyboard support**: full keyboard input with visual button feedback
-- **Accessible**: ARIA roles, live regions, visible focus styles, screen-reader-friendly
-- **Responsive**: mobile-first design, scales from 280px to 400px
+- Basic arithmetic: addition, subtraction, multiplication, and division
+- Decimal number support
+- Plus/minus sign toggle
+- Backspace to delete the last entered digit
+- Clear button to reset the calculator
+- Division-by-zero error handling
+- Keyboard support (digits, operators, Enter, Backspace, Escape)
+- Responsive layout that works on desktop and mobile
+- Accessible markup with ARIA labels and live regions
 
-## Keyboard Shortcuts
-
-| Key(s)          | Action                        |
-|-----------------|-------------------------------|
-| `0` – `9`       | Input digit                   |
-| `+` `-` `*` `/` | Set operator                  |
-| `Enter` or `=`  | Evaluate (equals)             |
-| `Escape` or `c` | Clear calculator              |
-| `Backspace`     | Delete last digit             |
-| `.` or `,`      | Decimal point                 |
-| `%`             | Percent                       |
-
-> **Note:** Modifier-key combos (e.g. `Ctrl+R`, `Ctrl+C`) are never intercepted — browser defaults are preserved.
-
-## Accessibility
-
-- `role="application"` and `aria-label="Calculator"` on the calculator container
-- `aria-live="polite"` and `aria-atomic="true"` on the current display so screen readers announce results
-- Visually hidden `<h1>Calculator Application</h1>` for screen reader context
-- All buttons have `tabindex="0"` and are reachable via `Tab` key
-- Visible focus ring (blue outline) for keyboard-only navigation
-- Descriptive `aria-label` on every button
-
-## File Structure
+## Project Structure
 
 ```
-calculator/
-├── index.html   # Semantic markup, ARIA attributes, button grid
-├── style.css    # Layout, theming, responsive design, focus styles
-├── script.js    # Calculator logic, keyboard handling, accessibility
+.
+├── index.html   # Semantic HTML shell and calculator markup
+├── style.css    # CSS custom properties, Grid layout, responsive styles
+├── script.js    # ES6 Calculator class with full state management
 └── README.md    # This file
 ```
 
-## Deployment (GitHub Pages)
+## Running Locally
 
-1. Push the repository to GitHub.
-2. Go to **Settings → Pages**.
-3. Under **Source**, select the `main` branch and `/ (root)` folder.
-4. Click **Save** — your calculator will be live at `https://<username>.github.io/<repo>/`.
+No build step or server is required.
 
-## Development
+1. **Clone or download** this repository:
+   ```bash
+   git clone https://github.com/<your-username>/simple-calculator.git
+   ```
+2. **Open `index.html`** directly in any modern web browser (Chrome, Firefox, Safari, Edge):
+   - Double-click `index.html` in your file explorer, **or**
+   - Drag and drop `index.html` onto an open browser window, **or**
+   - From the terminal:
+     ```bash
+     # macOS
+     open index.html
+     # Linux
+     xdg-open index.html
+     # Windows (PowerShell)
+     Start-Process index.html
+     ```
+3. The calculator will load instantly — no internet connection needed.
 
-No build step required. Open `index.html` directly in a browser, or serve with any static file server:
+## Keyboard Shortcuts
 
-```bash
-# Python 3
-python -m http.server 8080
+| Key(s)            | Action                        |
+|-------------------|-------------------------------|
+| `0` – `9`         | Enter digit                   |
+| `.`               | Decimal point                 |
+| `+` `-` `*` `/`   | Choose operator               |
+| `Enter` or `=`    | Calculate result              |
+| `Backspace`       | Delete last digit             |
+| `Escape` or `c`   | Clear / reset                 |
 
-# Node.js (npx)
-npx serve .
+## Deployment
+
+The app is deployed automatically to **GitHub Pages** from the `main` branch root directory via a GitHub Actions workflow. Visit the live version at:
+
 ```
+https://<your-username>.github.io/simple-calculator/
+```
+
+## License
+
+MIT — feel free to use, modify, and distribute.
